@@ -122,6 +122,13 @@
 
                 this.length++;
             }
+
+            makeCircular() {
+                if (this.head && this.tail) {
+                    this.tail.next = this.head;
+                    this.head.prev = this.tail;
+                }
+            }
         }
 
         let list = new DoublyLinkedList();
@@ -146,16 +153,17 @@
         // list.unshift(8)
         // console.log(list)
 
-        // list.push(9)
-        // list.push(15)
-        // list.push(20)
+        list.push(9)
+        list.push(15)
+        list.push(20)
         // console.log(list)
 
-        list.unshift(8)
-        list.unshift(4)
-        list.shift()
-        list.push(9)
-        console.log(list.showList())
+        // list.unshift(8)
+        // list.unshift(4)
+        // list.shift()
+        // list.push(9)
+        list.makeCircular()
+        console.log(list)
     </script>
 </body>
 </html>

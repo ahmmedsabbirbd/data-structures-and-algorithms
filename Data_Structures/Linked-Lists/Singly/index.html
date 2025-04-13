@@ -121,6 +121,14 @@
 
                 this.length++;
             }
+
+            makeCircular() {
+                if(!this.head) {
+                    return null;
+                }
+
+                this.tail.next = this.head;
+            }
         }
 
         let list = new SinglyLinkedList();
@@ -129,7 +137,8 @@
         list.push(55);
         list.push(333);
         list.push('x');
-        // console.log(list);
+        list.makeCircular();
+        console.log(list);
 
 
         // console.log("Pop \n\n");
@@ -146,12 +155,12 @@
         // list.shift();
         // console.log(list);
 
-        console.log("unshif \n\n");
-        list.unshift('xxx');
-        list.unshift(3);
-        console.log(list);
-
-        console.log(list.showList())
+        // console.log("unshif \n\n");
+        // list.unshift('xxx');
+        // list.unshift(3);
+        // console.log(list);
+        //
+        // console.log(list.showList())
     </script>
 </body>
 </html>
