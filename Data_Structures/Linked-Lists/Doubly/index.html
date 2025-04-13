@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // isEmpty, push, pop, shift, unshift, show list
+
+        // push O(1)
+        // pop O(1)
+        // shift O(1)
+        // unshift O(1)
+        // show list O(n)
+
+        class Node {
+            constructor(value) {
+                this.value = value,
+                this.prev = null
+                this.next = null
+            }
+        }
+
+        // const  node  = new Node(10);
+        // node.next = new Node(11);
+        // node.prev = new Node(9);
+        // node.prev.prev = new Node(8);
+
+        // console.log(node);
+
+        class DoublyLinkedList {
+            constructor() {
+                this.head = null;
+                this.tail = null;
+                this.length = 0;
+            }
+
+            isEmpty() {
+                return this.length === 0
+            }
+
+            push(value) {
+                let newNode  = new Node(value);
+                if(this.isEmpty()) {
+                    this.head = newNode;
+                    this.tail = newNode;
+                } else {
+                    newNode.prev = this.tail;
+                    this.tail.next = newNode;
+                    this.tail = newNode;
+                }
+
+                this.length++;
+            }
+
+            pop () {
+                if(!this.head) {
+                    return;
+                }
+                if(this.length ===1) {
+                    let removedNode = this.head;
+                    this.head = null;
+                    this.tail = null;
+                    this.length = 0;
+
+                    return removedNode;
+                } else {
+                    let lastNode = this.tail;
+                    let newLastNode = this.tail.prev;
+                    this.tail = newLastNode;
+                    this.tail.next = null;
+
+                    this.length--;
+                    return lastNode;
+                }
+            }
+
+            shift() {
+                if(!this.head) {
+                    return null;
+                }
+
+                let currentNode = this.head;
+                this.head = currentNode.next;
+                this.length--;
+
+                if(this.length === 0) {
+                    this.tail = null;
+                } else {
+                    this.head.prev = null;
+                }
+
+                return currentNode;
+            }
+
+            showList() {
+                let arry = [];
+                let currentNode =  this.head;
+
+                 while (currentNode) {
+                     arry.push(currentNode.value);
+                     currentNode = currentNode.next;
+                 }
+
+                 return arry;
+            }
+
+            unshift(value){
+                let newNode = new Node(value);
+
+                if(!this.head) {
+                    this.head = newNode;
+                    this.tail = newNode;
+                } else {
+                    let LastNewNode = this.head;
+                    LastNewNode.prev = newNode;
+                    this.head = newNode;
+                    this.head.next = LastNewNode;
+                }
+
+                this.length++;
+            }
+        }
+
+        let list = new DoublyLinkedList();
+
+        // list.push(9)
+        // list.push(15)
+        // list.push(20)
+        // list.pop()
+        // list.pop()
+        // list.pop()
+        // console.log(list)
+
+        // list.push(9)
+        // list.push(15)
+        // list.push(20)
+        // list.shift()
+        // console.log(list)
+
+        // list.push(9)
+        // list.push(15)
+        // list.push(20)
+        // list.unshift(8)
+        // console.log(list)
+
+        // list.push(9)
+        // list.push(15)
+        // list.push(20)
+        // console.log(list)
+
+        list.unshift(8)
+        list.unshift(4)
+        list.shift()
+        list.push(9)
+        console.log(list.showList())
+    </script>
+</body>
+</html>
