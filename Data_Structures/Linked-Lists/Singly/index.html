@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // isEmpty, push, pop, shift, unshift, show list
+
+        // push O(1)
+        // pop O(n)
+        // shift O(1)
+        // unshift O(1)
+        // show list O(n)
+
+        class Node {
+            constructor(value) {
+                this.value = value,
+                this.next = null
+            }
+        }
+
+        class SinglyLinkedList {
+            constructor() {
+                this.head = null;
+                this.tail = null;
+                this.length = 0;
+            }
+
+            isEmpty() {
+                return this.length === 0
+            }
+
+            push(value) {
+                let newNode  = new Node(value);
+                if(this.isEmpty()) {
+                    this.head = newNode;
+                    this.tail = newNode;
+                } else {
+                    this.tail.next = newNode;
+                    this.tail = newNode;
+                }
+
+                this.length++;
+            }
+
+            pop () {
+                if(!this.head) {
+                    return;
+                }
+                if(this.length ===1) {
+                    let removedNode = this.head;
+                    this.head = null;
+                    this.tail = null;
+                    this.length = 0;
+
+                    return removedNode;
+                }
+
+                let currentNode = this.head;
+                let lastNode = this.tail;
+                let newLastNode;
+
+                while(currentNode) {
+                    if(currentNode.next === lastNode) {
+                        newLastNode = currentNode;
+                        break;
+                    }
+
+                    currentNode = currentNode.next;
+                }
+
+                newLastNode.next = null;
+                this.tail = newLastNode;
+                this.length--;
+
+                return lastNode;
+            }
+
+            shift() {
+                if(!this.head) {
+                    return null;
+                }
+
+                let currentNode = this.head;
+                this.head = currentNode.next;
+                this.length--;
+
+                if(this.length === 0) {
+                    this.tail = null;
+                }
+
+                return currentNode;
+            }
+
+            showList() {
+                let arry = [];
+                let currentNode =  this.head;
+
+                 while (currentNode) {
+                     arry.push(currentNode.value);
+                     currentNode = currentNode.next;
+                 }
+
+                 return arry;
+            }
+
+            unshift(value){
+                let newNode = new Node(value);
+
+                if(!this.head) {
+                    this.head = newNode;
+                    this.tail = newNode;
+                } else {
+                    let LastNewNode = this.head;
+                    this.head = newNode;
+                    this.head.next = LastNewNode;
+                }
+
+                this.length++;
+            }
+        }
+
+        let list = new SinglyLinkedList();
+
+        list.push(10);
+        list.push(55);
+        list.push(333);
+        list.push('x');
+        // console.log(list);
+
+
+        // console.log("Pop \n\n");
+        // list.pop();
+        // list.pop();
+        // list.pop();
+        // list.pop();
+        // console.log(list);
+
+        // console.log("shif \n\n");
+        // list.shift();
+        // list.shift();
+        // list.shift();
+        // list.shift();
+        // console.log(list);
+
+        console.log("unshif \n\n");
+        list.unshift('xxx');
+        list.unshift(3);
+        console.log(list);
+
+        console.log(list.showList())
+    </script>
+</body>
+</html>
