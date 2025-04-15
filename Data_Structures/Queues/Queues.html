@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        class Queue {
+            constructor() {
+                this.items = [];
+            }
+
+            enqueue(item) {
+                this.items.push(item);
+            }
+
+            dequeue() {
+                return this.items.shift();
+            }
+
+            peek() {
+                return this.items[0];
+            }
+
+            isEmpty() {
+                return this.items.length === 0;
+            }
+        }
+
+        // const Items = new Queue();
+        // Items.enqueue('sabbir')
+        // Items.enqueue('Safi')
+        //
+        // console.log(Items)
+        // // console.log(Items.dequeue())
+        // // console.log(Items.dequeue())
+
+
+        class CircularQueue {
+            constructor(capacity) {
+                this.items = new Array(capacity);
+                this.capacity = capacity;
+                this.front = -1;
+                this.rear = -1;
+                this.size = 0;
+            }
+
+            enqueue(item) {
+                if (this.isFull()) {
+                    return false;
+                }
+
+                if (this.isEmpty()) {
+                    this.front = 0;
+                }
+
+                this.rear = (this.rear + 1) % this.capacity;
+                this.items[this.rear] = item;
+                this.size++;
+                return true;
+            }
+
+            dequeue() {
+                if (this.isEmpty()) {
+                    return null;
+                }
+
+                const item = this.items[this.front];
+
+                if (this.front === this.rear) {
+                    // Last element
+                    this.front = -1;
+                    this.rear = -1;
+                } else {
+                    this.front = (this.front + 1) % this.capacity;
+                }
+
+                this.size--;
+                return item;
+            }
+
+            peek() {
+                if (this.isEmpty()) {
+                    return null;
+                }
+                return this.items[this.front];
+            }
+
+            isEmpty() {
+                return this.size === 0;
+            }
+
+            isFull() {
+                return this.size === this.capacity;
+            }
+
+            // Display all elements in the queue
+            display() {
+                if (this.isEmpty()) {
+                    console.log("Queue is empty.");
+                    return;
+                }
+
+                let result = [];
+                let i = this.front;
+
+                // Iterate through the queue
+                while (i !== this.rear) {
+                    result.push(this.items[i]);
+                    i = (i + 1) % this.capacity;
+                }
+                result.push(this.items[this.rear]); // Add the last element
+
+                console.log("Queue contents: " + result.join(", "));
+            }
+        }
+
+        // // Create a circular queue with a capacity of 5
+        // const queue = new CircularQueue(5);
+        //
+        // // Enqueue elements and log the result
+        // console.log("Add 10 to the queue: " + queue.enqueue(10));  // true
+        // console.log("Add 20 to the queue: " + queue.enqueue(20));  // true
+        // console.log("Add 30 to the queue: " + queue.enqueue(30));  // true
+        // console.log("Add 40 to the queue: " + queue.enqueue(40));  // true
+        // console.log("Add 50 to the queue: " + queue.enqueue(50));  // true
+        // console.log("Add 60 to the queue (queue is full): " + queue.enqueue(60));  // false
+        //
+        // queue.display();
+        // // Peek the front element and log the result
+        // console.log("Peek front element: " + queue.peek());  // 10
+        //
+        // // Dequeue elements and log the result
+        // console.log("Dequeue element: " + queue.dequeue());  // 10
+        // console.log("Dequeue element: " + queue.dequeue());  // 20
+        //
+        // // Enqueue more elements and log the result
+        // console.log("Add 60 to the queue after dequeue: " + queue.enqueue(60));  // true
+        // console.log("Add 70 to the queue after dequeue: " + queue.enqueue(70));  // true
+        //
+        // // Peek the front element again and log the result
+        // console.log("Peek front element after enqueuing more items: " + queue.peek());  // 30
+        // queue.display();
+        //
+        // // Dequeue all elements and log the result
+        // console.log("Dequeue element: " + queue.dequeue());  // 30
+        // console.log("Dequeue element: " + queue.dequeue());  // 40
+        // console.log("Dequeue element: " + queue.dequeue());  // 50
+        // console.log("Dequeue element: " + queue.dequeue());  // 60
+        // console.log("Dequeue element: " + queue.dequeue());  // 70
+        //
+        // // Check if the queue is empty and log the result
+        // console.log("Is the queue empty? " + queue.isEmpty());  // true
+
+        class PriorityQueue {
+            constructor() {
+                this.items = [];
+            }
+
+            // Higher priority number = higher priority
+            enqueue(item, priority) {
+                const queueElement = { item, priority };
+                let added = false;
+
+                for (let i = 0; i < this.items.length; i++) {
+                    if (queueElement.priority > this.items[i].priority) {
+                        this.items.splice(i, 0, queueElement);
+                        added = true;
+                        break;
+                    }
+                }
+
+                if (!added) {
+                    this.items.push(queueElement);
+                }
+            }
+
+            dequeue() {
+                if (this.isEmpty()) {
+                    return null;
+                }
+                return this.items.shift().item;
+            }
+
+            peek() {
+                if (this.isEmpty()) {
+                    return null;
+                }
+                return this.items[0].item;
+            }
+
+            isEmpty() {
+                return this.items.length === 0;
+            }
+        }
+
+        const pq = new PriorityQueue();
+
+        pq.enqueue("Fix critical bug", 5);
+        pq.enqueue("Add new feature", 3);
+        pq.enqueue("Refactor code", 1);
+        pq.enqueue("Handle customer ticket", 4);
+
+        console.log("Top priority task:", pq.peek()); // "Fix critical bug"
+
+        console.log("Dequeue:", pq.dequeue()); // "Fix critical bug"
+        console.log("Dequeue:", pq.dequeue()); // "Handle customer ticket"
+        console.log("Dequeue:", pq.dequeue()); // "Add new feature"
+        console.log("Dequeue:", pq.dequeue()); // "Refactor code"
+        console.log("Dequeue:", pq.dequeue()); // null (empty now)
+
+
+    </script>
+</body>
+</html>
