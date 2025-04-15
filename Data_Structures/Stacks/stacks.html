@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const stack = [];
+
+        // Push
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+
+        // Peek
+        console.log(stack[stack.length - 1]); // 30
+
+        // Pop
+        console.log(stack.pop()); // 30
+        console.log(stack); // [10, 20]
+
+        // Time & Space Complexity Same for this method this case
+        // push()     => O(1)
+        // pop()      => O(1)
+        // peek()     => O(1)
+        // size()     => O(1)
+        // print()    => O(n)
+        // isEmpty()  => O(1)
+
+        class Stack {
+            constructor() {
+              this.items = [];
+              this.count = 0;
+            }
+            
+            push(item) {
+                this.items[this.count] = item;
+                this.count++
+            }
+            
+            pop() {
+                if (this.count === 0) {
+                    return undefined;
+                }
+
+                let lastItemDelete = this.items[this.count - 1]
+                this.count--;
+                return lastItemDelete;
+            }
+            
+            peek() {
+              return this.items[this.count - 1];
+            }
+
+            size() {
+              return this.count;
+            }
+
+            print() {
+                if (this.size() === 0) {
+                    return undefined;
+                }
+
+                let array =  [];
+                for (let i = 0; i < this.size(); i++) {
+                    array.push(this.items[i]);
+                }
+                return array;
+            }
+
+            isEmpty() {
+              return this.count === 0;
+            }
+        }
+
+        const items = new Stack();
+        console.log("is Empty : "+items.isEmpty());
+        items.push('Sabbir');
+        items.push('Ribbas');
+        items.push('Jan');
+        console.log("pop : "+items.pop());
+        console.log("pop : "+items.pop());
+        console.log("top items : "+items.peek());
+        console.log("Size : "+items.size());
+        items.push('Jan');
+        console.log(items.print())
+    </script>
+</body>
+</html>
