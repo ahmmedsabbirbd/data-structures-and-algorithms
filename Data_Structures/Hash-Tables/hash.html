@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Using Map
+        const map = new Map();
+        map.set("name", "Sabbir");
+        map.get("name"); // Sabbir
+
+        // Using Object
+        const obj = {
+            name: "Sabbir",
+            age: 22
+        };
+        // console.log(obj.name); // Sabbir
+
+
+        class HashTable {
+            constructor(size = 53) {
+                this.keyMap = new Array(size);
+            }
+
+            _hash(key) {
+                let total = 0;
+                const PRIME = 31;
+
+                // Loop through first 100 chars of key to create hash
+                for (let i = 0; i < Math.min(key.length, 100); i++) {
+                    const char = key[i];
+                    const value = char.charCodeAt(0) - 96;
+                    total = (total * PRIME + value) % this.keyMap.length;
+                }
+
+                return total;
+            }
+
+            set(key, value) {
+                const index = this._hash(key);
+
+                if (!this.keyMap[index]) {
+                    this.keyMap[index] = [];
+                }
+
+                // Check if key already exists
+                for (let i = 0; i < this.keyMap[index].length; i++) {
+                    if (this.keyMap[index][i][0] === key) {
+                        this.keyMap[index][i][1] = value;
+                        return;
+                    }
+                }
+
+                // Add new key-value pair
+                this.keyMap[index].push([key, value]);
+            }
+
+            get(key) {
+                const index = this._hash(key);
+
+                if (!this.keyMap[index]) return undefined;
+
+                for (let i = 0; i < this.keyMap[index].length; i++) {
+                    if (this.keyMap[index][i][0] === key) {
+                        return this.keyMap[index][i][1];
+                    }
+                }
+
+                return undefined;
+            }
+
+            keys() {
+                const keysArr = [];
+
+                for (let i = 0; i < this.keyMap.length; i++) {
+                    if (this.keyMap[i]) {
+                        for (let j = 0; j < this.keyMap[i].length; j++) {
+                            keysArr.push(this.keyMap[i][j][0]);
+                        }
+                    }
+                }
+
+                return keysArr;
+            }
+
+            values() {
+                const valuesArr = [];
+                const uniqueValues = {};
+
+                for (let i = 0; i < this.keyMap.length; i++) {
+                    if (this.keyMap[i]) {
+                        for (let j = 0; j < this.keyMap[i].length; j++) {
+                            const value = this.keyMap[i][j][1];
+
+                            if (!uniqueValues[value]) {
+                                uniqueValues[value] = true;
+                                valuesArr.push(value);
+                            }
+                        }
+                    }
+                }
+
+                return valuesArr;
+            }
+        }
+
+        // Usage
+        // const ht = new HashTable();
+        // ht.set("name", "Sabbir");
+        // ht.set("age", 22);
+        //
+        // ht.set("phone", "01712923446");
+        // ht.set("address", "Fulbari");
+        //
+        // console.log(ht.get("phone"));  // Sabbir
+        // console.log(ht.keys());       // ["name", "age"]
+        // console.log(ht.values());       // ["name", "age"]
+
+
+
+
+
+        class LRUCache {
+            constructor(capacity) {
+                this.capacity = capacity;
+                this.cache = new Map();  // Using Map for O(1) operations and tracking insertion order
+            }
+
+            get(key) {
+                if (!this.cache.has(key)) return -1;
+
+                // Update access by deleting and re-adding
+                const value = this.cache.get(key);
+                this.cache.delete(key);
+                this.cache.set(key, value);
+
+                return value;
+            }
+
+            put(key, value) {
+                // If key exists, remove it first
+                if (this.cache.has(key)) {
+                    this.cache.delete(key);
+                }
+
+                // If cache is full, remove least recently used item (first item)
+                if (this.cache.size >= this.capacity) {
+                    const firstKey = this.cache.keys().next().value;
+                    this.cache.delete(firstKey);
+                }
+
+                // Add new key
+                this.cache.set(key, value);
+            }
+        }
+
+        // Usage
+        // const cache = new LRUCache(2);
+        // cache.put(1, 1);      // cache = {1=1}
+        // cache.put(2, 2);      // cache = {1=1, 2=2}
+        // console.log(cache.get(1));  // returns 1
+        // cache.put(3, 3);      // evicts key 2, cache = {1=1, 3=3}
+        // console.log(cache.get(2));  // returns -1 (not found)
+        //
+        //
+
+
+
+
+
+
+
+
+        class SearchEngine {
+            constructor() {
+                this.wordMap = new Map();
+            }
+
+            // Index a document with words
+            indexDocument(docId, text) {
+                const words = text.toLowerCase().split(/\W+/);
+
+                words.forEach(word => {
+                    if (word.length < 2) return;  // Skip short words
+
+                    if (!this.wordMap.has(word)) {
+                        this.wordMap.set(word, new Set());
+                    }
+
+                    this.wordMap.get(word).add(docId);
+                });
+            }
+
+            // Search for documents containing the word
+            search(query) {
+                const searchWord = query.toLowerCase();
+
+                if (!this.wordMap.has(searchWord)) {
+                    return [];
+                }
+
+                return Array.from(this.wordMap.get(searchWord));
+            }
+
+            // Get prefix-based suggestions (autocomplete)
+            getSuggestions(prefix, limit = 5) {
+                prefix = prefix.toLowerCase();
+                const suggestions = [];
+
+                for (const [word] of this.wordMap) {
+                    if (word.startsWith(prefix)) {
+                        suggestions.push(word);
+                        if (suggestions.length >= limit) break;
+                    }
+                }
+
+                return suggestions;
+            }
+        }
+
+        // Usage
+        const search = new SearchEngine();
+        search.indexDocument(1, "Hash tables are fast data structures");
+        search.indexDocument(2, "Hash functions map keys to array indices");
+        search.indexDocument(3, "Tables help organize data in rows and columns");
+
+        console.log(search.search("hash"));        // [1, 2]
+        console.log(search.search("tables"));      // [1, 3]
+        console.log(search.getSuggestions("ha"));  // ["hash"]
+
+    </script>
+</body>
+</html>
