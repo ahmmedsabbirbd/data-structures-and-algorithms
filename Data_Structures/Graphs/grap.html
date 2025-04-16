@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        class SimpleGraph {
+            constructor(isDirected = false) {
+                this.map = {}; // like the city map
+                this.isDirected = isDirected;
+            }
+
+            // Add a place to the map
+            addPlace(place) {
+                if (!this.map[place]) {
+                    this.map[place] = [];
+                }
+                return this;
+            }
+
+            // Connect two places with a road
+            connectPlaces(place1, place2, cost = 1) {
+                if (!this.map[place1]) this.addPlace(place1);
+                if (!this.map[place2]) this.addPlace(place2);
+
+                this.map[place1].push({ to: place2, cost });
+
+                if (!this.isDirected) {
+                    this.map[place2].push({ to: place1, cost });
+                }
+
+                return this;
+            }
+
+            // Remove road between two places
+            removeRoad(place1, place2) {
+                this.map[place1] = this.map[place1].filter(road => road.to !== place2);
+
+                if (!this.isDirected) {
+                    this.map[place2] = this.map[place2].filter(road => road.to !== place1);
+                }
+
+                return this;
+            }
+
+            // Remove a place and its roads
+            deletePlace(place) {
+                if (!this.map[place]) return;
+
+                while (this.map[place].length) {
+                    const next = this.map[place].pop().to;
+                    this.removeRoad(place, next);
+                }
+
+                delete this.map[place];
+                return this;
+            }
+
+            // Go through all connected places - Deep way (Recursive)
+            goDeepRecursive(start) {
+                const result = [];
+                const visited = {};
+                const map = this.map;
+
+                (function visit(place) {
+                    if (!place) return null;
+                    visited[place] = true;
+                    result.push(place);
+
+                    map[place].forEach(neighbor => {
+                        if (!visited[neighbor.to]) {
+                            return visit(neighbor.to);
+                        }
+                    });
+                })(start);
+
+                return result;
+            }
+
+            // Go through all connected places - Deep way (with loop)
+            goDeepLoop(start) {
+                const stack = [start];
+                const result = [];
+                const visited = {};
+                visited[start] = true;
+
+                while (stack.length) {
+                    const current = stack.pop();
+                    result.push(current);
+
+                    this.map[current].forEach(neighbor => {
+                        if (!visited[neighbor.to]) {
+                            visited[neighbor.to] = true;
+                            stack.push(neighbor.to);
+                        }
+                    });
+                }
+
+                return result;
+            }
+
+            // Visit all places - level by level
+            goWide(start) {
+                const queue = [start];
+                const result = [];
+                const visited = {};
+                visited[start] = true;
+
+                while (queue.length) {
+                    const current = queue.shift();
+                    result.push(current);
+
+                    this.map[current].forEach(neighbor => {
+                        if (!visited[neighbor.to]) {
+                            visited[neighbor.to] = true;
+                            queue.push(neighbor.to);
+                        }
+                    });
+                }
+
+                return result;
+            }
+
+            // Find cheapest way from one place to another
+            findCheapestPath(from, to) {
+                const queue = new EasyQueue();
+                const costMap = {};
+                const previous = {};
+                const path = [];
+                let shortest;
+
+                for (let place in this.map) {
+                    if (place === from) {
+                        costMap[place] = 0;
+                        queue.add(place, 0);
+                    } else {
+                        costMap[place] = Infinity;
+                        queue.add(place, Infinity);
+                    }
+                    previous[place] = null;
+                }
+
+                while (queue.items.length) {
+                    shortest = queue.remove().place;
+
+                    if (shortest === to) {
+                        while (previous[shortest]) {
+                            path.push(shortest);
+                            shortest = previous[shortest];
+                        }
+                        break;
+                    }
+
+                    if (shortest || costMap[shortest] !== Infinity) {
+                        for (let neighbor of this.map[shortest]) {
+                            let newCost = costMap[shortest] + neighbor.cost;
+                            if (newCost < costMap[neighbor.to]) {
+                                costMap[neighbor.to] = newCost;
+                                previous[neighbor.to] = shortest;
+                                queue.add(neighbor.to, newCost);
+                            }
+                        }
+                    }
+                }
+
+                return path.concat(shortest).reverse();
+            }
+        }
+
+        // Very simple priority queue
+        class EasyQueue {
+            constructor() {
+                this.items = [];
+            }
+
+            add(place, priority) {
+                this.items.push({ place, priority });
+                this.items.sort((a, b) => a.priority - b.priority);
+            }
+
+            remove() {
+                return this.items.shift();
+            }
+        }
+
+        const myMap = new SimpleGraph();
+        myMap.addPlace("Dhaka");
+        myMap.addPlace("Rajshahi");
+        myMap.addPlace("Sylhet");
+        myMap.addPlace("Khulna");
+
+        myMap.connectPlaces("Dhaka", "Rajshahi", 3);
+        myMap.connectPlaces("Dhaka", "Sylhet", 2);
+        myMap.connectPlaces("Rajshahi", "Khulna", 1);
+        myMap.connectPlaces("Sylhet", "Khulna", 4);
+
+        console.log(myMap.goDeepRecursive("Dhaka"));
+        // ["Dhaka", "Rajshahi", "Khulna", "Sylhet"]
+
+        console.log(myMap.goWide("Dhaka"));
+        // ["Dhaka", "Rajshahi", "Sylhet", "Khulna"]
+
+        console.log(myMap.findCheapestPath("Dhaka", "Khulna"));
+        // ["Dhaka", "Rajshahi", "Khulna"]
+
+    </script>
+</body>
+</html>

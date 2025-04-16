@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        class Node {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+            }
+        }
+
+        class BinarySearchTree {
+            constructor() {
+                this.root = null;
+            }
+
+            insert(value) {
+                const newNode = new Node(value);
+
+                if (!this.root) {
+                    this.root = newNode;
+                    return this;
+                }
+
+                let current = this.root;
+
+                while (true) {
+                    // Handle duplicates (can be modified based on requirements)
+                    if (value === current.value) return undefined;
+
+                    if (value < current.value) {
+                        if (!current.left) {
+                            current.left = newNode;
+                            return this;
+                        }
+                        current = current.left;
+                    } else {
+                        if (!current.right) {
+                            current.right = newNode;
+                            return this;
+                        }
+                        current = current.right;
+                    }
+                }
+            }
+
+            search(value) {
+                if (!this.root) return false;
+
+                let current = this.root;
+
+                while (current) {
+                    if (value === current.value) return true;
+                    if (value < current.value) {
+                        current = current.left;
+                    } else {
+                        current = current.right;
+                    }
+                }
+
+                return false;
+            }
+
+            // Breadth-First Search / Level Order Traversal
+            bfs() {
+                const result = [];
+                const queue = [];
+
+                if (this.root) {
+                    queue.push(this.root);
+
+                    while (queue.length) {
+                        const current = queue.shift();
+                        result.push(current.value);
+
+                        if (current.left) queue.push(current.left);
+                        if (current.right) queue.push(current.right);
+                    }
+                }
+
+                return result;
+            }
+
+            // In-Order Traversal: Left, Root, Right
+            dfsInOrder() {
+                const result = [];
+
+                function traverse(node) {
+                    if (node.left) traverse(node.left);
+                    result.push(node.value);
+                    if (node.right) traverse(node.right);
+                }
+
+                if (this.root) traverse(this.root);
+                return result;
+            }
+
+            // Pre-Order Traversal: Root, Left, Right
+            dfsPreOrder() {
+                const result = [];
+
+                function traverse(node) {
+                    result.push(node.value);
+                    if (node.left) traverse(node.left);
+                    if (node.right) traverse(node.right);
+                }
+
+                if (this.root) traverse(this.root);
+                return result;
+            }
+
+            // Post-Order Traversal: Left, Right, Root
+            dfsPostOrder() {
+                const result = [];
+
+                function traverse(node) {
+                    if (node.left) traverse(node.left);
+                    if (node.right) traverse(node.right);
+                    result.push(node.value);
+                }
+
+                if (this.root) traverse(this.root);
+                return result;
+            }
+        }
+
+        // Usage
+        // const bst = new BinarySearchTree();
+        // bst.insert(15);
+        // bst.insert(5);
+        // bst.insert(10);
+        // bst.insert(15);
+        // bst.insert(6);
+        // bst.insert(2);
+        // bst.insert(7);
+        // bst.insert(20);
+        //
+        // console.log(bst);
+        //
+        // console.log(bst.dfsInOrder());   // [2, 5, 7, 10, 15, 20]
+        // console.log(bst.dfsPreOrder());  // [10, 5, 2, 7, 15, 20]
+        // console.log(bst.dfsPostOrder()); // [2, 7, 5, 20, 15, 10]
+        // console.log("bfs : "+bst.bfs());          // [10, 5, 15, 2, 7, 20]
+
+
+        class TrieNode {
+            constructor() {
+                this.children = {};
+                this.isEndOfWord = false;
+            }
+        }
+
+        class Trie {
+            constructor() {
+                this.root = new TrieNode();
+            }
+
+            // Insert a word into the trie
+            insert(word) {
+                let current = this.root;
+
+                for (let char of word) {
+                    if (!current.children[char]) {
+                        current.children[char] = new TrieNode();
+                    }
+                    current = current.children[char];
+                }
+
+                current.isEndOfWord = true;
+            }
+
+            // Search for a word in the trie
+            search(word) {
+                let current = this.root;
+
+                for (let char of word) {
+                    if (!current.children[char]) {
+                        return false;
+                    }
+                    current = current.children[char];
+                }
+
+                return current.isEndOfWord;
+            }
+
+            // Check if any word starts with the given prefix
+            startsWith(prefix) {
+                let current = this.root;
+
+                for (let char of prefix) {
+                    if (!current.children[char]) {
+                        return false;
+                    }
+                    current = current.children[char];
+                }
+
+                return true;
+            }
+
+            // Get all words with the given prefix
+            getWordsWithPrefix(prefix) {
+                const words = [];
+                let current = this.root;
+
+                // Navigate to the end of the prefix
+                for (let char of prefix) {
+                    if (!current.children[char]) {
+                        return words;
+                    }
+                    current = current.children[char];
+                }
+
+                // Helper function to find all words
+                function findWords(node, word) {
+                    if (node.isEndOfWord) {
+                        words.push(word);
+                    }
+
+                    for (let char in node.children) {
+                        findWords(node.children[char], word + char);
+                    }
+                }
+
+                findWords(current, prefix);
+                return words;
+            }
+        }
+
+        // Usage
+        const trie = new Trie();
+        trie.insert("apple");
+        trie.insert("application");
+        trie.insert("app");
+        trie.insert("banana");
+
+        console.log(trie.search("apple"));       // true
+        console.log(trie.search("apples"));      // false
+        console.log(trie.startsWith("app"));     // true
+        console.log(trie.getWordsWithPrefix("app")); // ["app", "apple", "application"]
+    </script>
+</body>
+</html>
