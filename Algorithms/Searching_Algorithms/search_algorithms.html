@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function linearSearch(arr, target) {
+            for (let i = 0; i < arr.length; i++) {
+                console.log("linner search loop");
+                if (arr[i] === target) {
+                    return i; // Return the index where target is found
+                }
+            }
+            return -1; // Target not found
+        }
+
+        // Example usage
+        const array = [5, 3, 8, 4, 2];
+        const targetValue = 2;
+        const result = linearSearch(array, targetValue);
+
+        console.log(`Searching for ${targetValue} in [${array}]`);
+        if (result !== -1) {
+            console.log(`Found at index ${result}`);
+        } else {
+            console.log("Not found");
+        }
+
+        console.log("\n\n\nbinary search starting\n\n\n");
+
+        function binarySearch(arr, target) {
+            let left = 0;
+            let right = arr.length - 1;
+
+            while (left <= right) {
+                console.log("binary search loop");
+                const mid = Math.floor((left + right) / 2);
+
+                // Check if target is present at mid
+                if (arr[mid] === target) {
+                    return mid;
+                }
+
+                // If target is greater, ignore left half
+                if (arr[mid] < target) {
+                    left = mid + 1;
+                }
+                // If target is smaller, ignore right half
+                else {
+                    right = mid - 1;
+                }
+            }
+
+            return -1; // Target not found
+        }
+
+        // Example usage
+        const sortedArray = [2, 3, 4, 5, 8];
+        const targetValue1 = 8;
+        const result1 = binarySearch(sortedArray, targetValue1);
+
+        console.log(`Searching for ${targetValue1} in [${sortedArray}]`);
+        if (result1 !== -1) {
+            console.log(`Found at index ${result1}`);
+        } else {
+            console.log("Not found");
+        }
+
+        console.log("\n\n\nBinary Search on Answers \n\n\n");
+
+
+        // Example: Find minimum capacity needed to ship all packages within D days
+        function shipWithinDays(weights, days) {
+            // Helper function to check if we can ship with given capacity
+            function canShipWithCapacity(capacity) {
+                let dayCount = 1;
+                let currentWeight = 0;
+
+                for (const weight of weights) {
+                    // If a single package is heavier than capacity, we can't ship
+                    if (weight > capacity) return false;
+
+                    // If adding current package exceeds capacity, put it in next day
+                    if (currentWeight + weight > capacity) {
+                        dayCount++;
+                        currentWeight = weight;
+                    } else {
+                        currentWeight += weight;
+                    }
+
+                    // If we need more days than allowed, return false
+                    if (dayCount > days) return false;
+                }
+
+                return true;
+            }
+
+            // Binary search on the capacity
+            let left = Math.max(...weights); // Minimum capacity is the heaviest package
+            let right = weights.reduce((a, b) => a + b, 0); // Maximum is sum of all weights
+
+            while (left < right) {
+                const mid = Math.floor((left + right) / 2);
+
+                if (canShipWithCapacity(mid)) {
+                    right = mid; // Try a smaller capacity
+                } else {
+                    left = mid + 1; // Need a larger capacity
+                }
+            }
+
+            return left; // Minimum capacity needed
+        }
+
+        const weights = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const days = 7;
+
+        const result3 = shipWithinDays(weights, days);
+        console.log(result3); // Output: 15
+
+    </script>
+</body>
+</html>

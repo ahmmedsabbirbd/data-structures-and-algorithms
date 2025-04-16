@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function binarySearch(arr, target, left = 0, right = arr.length - 1) {
+            // Base case: element not found
+            if (left > right) {
+              return -1;
+            }
+            
+            // Find the middle element
+            const mid = Math.floor((left + right) / 2);
+            
+            // Found the target
+            if (arr[mid] === target) {
+              return mid;
+            }
+            
+            // Divide & Conquer
+            if (arr[mid] > target) {
+              // Search in the left half
+              return binarySearch(arr, target, left, mid - 1);
+            } else {
+              // Search in the right half
+              return binarySearch(arr, target, mid + 1, right);
+            }
+          }
+          
+          // Iterative implementation
+          function binarySearchIterative(arr, target) {
+            let left = 0;
+            let right = arr.length - 1;
+            
+            while (left <= right) {
+              const mid = Math.floor((left + right) / 2);
+              
+              if (arr[mid] === target) {
+                return mid; // Target found
+              }
+              
+              if (arr[mid] > target) {
+                right = mid - 1; // Search left half
+              } else {
+                left = mid + 1; // Search right half
+              }
+            }
+            
+            return -1; // Target not found
+          }
+
+          function binarySearch(arr, target, left = 0, right = arr.length - 1) {
+            // Base case: element not found
+            if (left > right) {
+              return -1;
+            }
+            
+            // Find the middle element
+            const mid = Math.floor((left + right) / 2);
+            
+            // Found the target
+            if (arr[mid] === target) {
+              return mid;
+            }
+            
+            // Divide & Conquer
+            if (arr[mid] > target) {
+              // Search in the left half
+              return binarySearch(arr, target, left, mid - 1);
+            } else {
+              // Search in the right half
+              return binarySearch(arr, target, mid + 1, right);
+            }
+          }
+          
+          // Iterative implementation
+          function binarySearchIterative(arr, target) {
+            let left = 0;
+            let right = arr.length - 1;
+            
+            while (left <= right) {
+              const mid = Math.floor((left + right) / 2);
+              
+              if (arr[mid] === target) {
+                return mid; // Target found
+              }
+              
+              if (arr[mid] > target) {
+                right = mid - 1; // Search left half
+              } else {
+                left = mid + 1; // Search right half
+              }
+            }
+            
+            return -1; // Target not found
+          }
+
+        const sortedArray = [5, 10, 15, 20, 25, 30, 35];
+        const targetValue = 25;
+
+        // Recursive Binary Search
+        const recursiveResult = binarySearch(sortedArray, targetValue);
+        console.log(`Recursive Search: Index of ${targetValue} is`, recursiveResult);
+
+        // Iterative Binary Search
+        const iterativeResult = binarySearchIterative(sortedArray, targetValue);
+        console.log(`Iterative Search: Index of ${targetValue} is`, iterativeResult);
+
+    </script>
+</body>
+</html>
