@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<script>
+    // Binary tree node
+    class TreeNode {
+        constructor(val) {
+            this.val = val;
+            this.left = null;
+            this.right = null;
+        }
+    }
+
+    // DFS - Preorder Traversal (Root → Left → Right)
+    function preorderTraversal(root) {
+        const result = [];
+
+        function dfs(node) {
+            if (!node) return;
+
+            // Visit root
+            result.push(node.val);
+
+            // Visit left subtree
+            dfs(node.left);
+
+            // Visit right subtree
+            dfs(node.right);
+        }
+
+        dfs(root);
+        return result;
+    }
+    const tree = {
+        val: 1,
+        left: {
+            val: 2,
+            left: { val: 4, left: null, right: null },
+            right: {
+                val: 5,
+                left: null,
+                right: {
+                    val: 3,
+                    left: null,
+                    right: null
+                }
+            }
+        },
+        right: {
+            val: 3,
+            left: null,
+            right: null
+        }
+    };
+    const result = preorderTraversal(tree);
+    console.log(result); // Output: [1, 2, 4, 5, 3]
+
+
+    // DFS - Inorder Traversal (Left → Root → Right)
+    function inorderTraversal(root) {
+        const result = [];
+
+        function dfs(node) {
+            if (!node) return;
+
+            // Visit left subtree
+            dfs(node.left);
+
+            // Visit root
+            result.push(node.val);
+
+            // Visit right subtree
+            dfs(node.right);
+        }
+
+        dfs(root);
+        return result;
+    }
+
+    // DFS - Postorder Traversal (Left → Right → Root)
+    function postorderTraversal(root) {
+        const result = [];
+
+        function dfs(node) {
+            if (!node) return;
+
+            // Visit left subtree
+            dfs(node.left);
+
+            // Visit right subtree
+            dfs(node.right);
+
+            // Visit root
+            result.push(node.val);
+        }
+
+        dfs(root);
+        return result;
+    }
+
+    // BFS - Level Order Traversal
+    function levelOrderTraversal(root) {
+        if (!root) return [];
+
+        const result = [];
+        const queue = [root];
+
+        while (queue.length > 0) {
+            const levelSize = queue.length;
+            const currentLevel = [];
+
+            for (let i = 0; i < levelSize; i++) {
+                const node = queue.shift();
+
+                // Visit the current node
+                currentLevel.push(node.val);
+
+                // Add children to the queue
+                if (node.left) queue.push(node.left);
+                if (node.right) queue.push(node.right);
+            }
+
+            result.push(currentLevel);
+        }
+
+        return result;
+    }
+
+    // Iterative versions of DFS traversals
+    function preorderIterative(root) {
+        if (!root) return [];
+
+        const result = [];
+        const stack = [root];
+
+        while (stack.length > 0) {
+            const node = stack.pop();
+
+            result.push(node.val);
+
+            // Push right first so that left is processed first (LIFO)
+            if (node.right) stack.push(node.right);
+            if (node.left) stack.push(node.left);
+        }
+
+        return result;
+    }
+
+    function inorderIterative(root) {
+        if (!root) return [];
+
+        const result = [];
+        const stack = [];
+        let current = root;
+
+        while (current || stack.length > 0) {
+            // Reach the leftmost node
+            while (current) {
+                stack.push(current);
+                current = current.left;
+            }
+
+            // Process the current node
+            current = stack.pop();
+            result.push(current.val);
+
+            // Move to the right subtree
+            current = current.right;
+        }
+
+        return result;
+    }
+
+    function postorderIterative(root) {
+        if (!root) return [];
+
+        const result = [];
+        const stack = [root];
+
+        // Using a modified preorder traversal (Root → Right → Left)
+        // and then reversing the result to get (Left → Right → Root)
+        while (stack.length > 0) {
+            const node = stack.pop();
+
+            result.unshift(node.val); // Add to front
+
+            if (node.left) stack.push(node.left);
+            if (node.right) stack.push(node.right);
+        }
+
+        return result;
+    }
+</script>
+</body>
+</html>
